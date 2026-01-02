@@ -1,0 +1,7 @@
+{
+  "name": "p5 dimensions",
+  "description": "A simple game built with p5.js to explore 3d projections",
+  "pauseKey": "p",
+  "debug": true,
+  "fps": 60
+}
