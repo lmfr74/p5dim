@@ -3,5 +3,7 @@
   "description": "A simple game built with p5.js to explore 3d projections",
   "pauseKey": "p",
   "debug": true,
-  "fps": 60
+  "fps": 60,
+  "min_z": 0.1,
+  "max_z": 10
 }

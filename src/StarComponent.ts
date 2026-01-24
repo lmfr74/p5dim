@@ -10,7 +10,7 @@ export default class StarComponent extends Component {
     const screenPos = this.game.toScreen(this.position);
 
     // Draw a simple rectangle at the component's position
-    this.p5.fill(255);
+    this.p5.fill(255, this.opacity * 255);
     this.p5.rect(screenPos.x, screenPos.y, 5, 5);
   }
 }
