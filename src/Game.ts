@@ -29,11 +29,13 @@ export default class Game {
         console.debug('Game Settings:', this.settings);
 
         this.onWindowResize();
+
+        this.components.push(
+          new StarComponent(this, this.p5.createVector(0, 0))
+        );
+
+        console.info(`Game "${this.settings.name}" initialized.`);
       });
-
-      this.components.push(new StarComponent(this, this.p5.createVector(0, 0)));
-
-      console.info(`Game "${this.settings.name}" initialized.`);
     };
 
     p5.draw = () => {
