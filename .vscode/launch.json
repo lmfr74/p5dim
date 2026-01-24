@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Launch Edge",
+      "url": "http://localhost:5500",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack://p5dim/*": "${webRoot}/*"
+      }
+    }
+  ]
+}
