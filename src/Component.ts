@@ -7,11 +7,11 @@ export default class Component {
   position: p5.Vector;
   velocity: p5.Vector;
 
-  constructor(game: Game) {
+  constructor(game: Game, position?: p5.Vector, velocity?: p5.Vector) {
     this.game = game;
     this.p5 = game.p5;
-    this.position = this.p5.createVector(0, 0);
-    this.velocity = this.p5.createVector(0, 0);
+    this.position = position || this.p5.createVector(0, 0);
+    this.velocity = velocity || this.p5.createVector(0, 0);
   }
 
   update() {

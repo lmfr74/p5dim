@@ -27,9 +27,11 @@ export default class Game {
         this.p5.frameRate(this.settings.fps);
 
         console.debug('Game Settings:', this.settings);
+
+        this.onWindowResize();
       });
 
-      this.components.push(new StarComponent(this));
+      this.components.push(new StarComponent(this, this.p5.createVector(0, 0)));
 
       console.info(`Game "${this.settings.name}" initialized.`);
     };
@@ -55,8 +57,12 @@ export default class Game {
     };
 
     p5.windowResized = () => {
-      this.p5.resizeCanvas(this.p5.windowWidth, this.p5.windowHeight);
+      this.onWindowResize();
     };
+  }
+
+  private onWindowResize(): void {
+    this.p5.resizeCanvas(this.p5.windowWidth, this.p5.windowHeight);
   }
 
   // Converts world coordinates (-1..1) to screen coordinates (0..width/height).
