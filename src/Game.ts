@@ -12,6 +12,7 @@ interface ISettings {
   debug: boolean;
   min_z: number;
   max_z: number;
+  starsCount?: number;
 }
 
 // Manages the game state.
@@ -35,7 +36,7 @@ export default class Game {
 
         // Initialize components using the Factory
         const factory = new Factory(this);
-        factory.addStars(50);
+        factory.addStars(this.settings.starsCount || 10);
 
         console.info(`Game "${this.settings.name}" initialized.`);
       });
@@ -58,6 +59,12 @@ export default class Game {
         this.isPaused = !this.isPaused;
 
         console.info(`Game ${this.isPaused ? 'paused' : 'resumed'}.`);
+      } else {
+        console.debug(`Key pressed: ${this.p5.key}`);
+
+        this.components.forEach((component) => {
+          component.keyPressed(this.p5.key);
+        });
       }
     };
 

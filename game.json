@@ -5,5 +5,5 @@
   "debug": true,
   "fps": 60,
   "min_z": 0.1,
-  "max_z": 10
+  "max_z": 6.0
 }
