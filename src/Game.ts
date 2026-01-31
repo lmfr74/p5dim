@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import Component from './Component';
 import StarComponent from './StarComponent';
+import Factory from './Factory';
 
 // Interface for game settings.
 interface ISettings {
@@ -32,17 +33,10 @@ export default class Game {
 
         this.onWindowResize();
 
-        // create a grid of stars
-        for (let x = -1; x <= 1; x += 0.2) {
-          for (let y = -1; y <= 1; y += 0.2) {
-            const min_z = -this.settings.max_z;
-            const max_z = 1;
-            const z = this.p5.random(min_z, max_z);
-            const p = this.p5.createVector(x, y, z);
+        // Initialize components using the Factory
+        const factory = new Factory(this);
+        factory.addStars(50);
 
-            this.components.push(new StarComponent(this, p));
-          }
-        }
         console.info(`Game "${this.settings.name}" initialized.`);
       });
     };
@@ -55,8 +49,7 @@ export default class Game {
       // render all components, skipping those not visible
       this.p5.background(0);
       this.components.forEach((component) => {
-        if (component.notVisible()) return;
-        else component.render();
+        if (component.visible) component.render();
       });
     };
 
@@ -78,7 +71,7 @@ export default class Game {
   }
 
   // Converts world coordinates (-1..1) to screen coordinates (0..width/height).
-  toScreen(p: p5.Vector): p5.Vector {
+  public toScreen(p: p5.Vector): p5.Vector {
     const projected = this.project(p);
     return this.p5.createVector(
       (projected.x + 1) * 0.5 * this.p5.width,

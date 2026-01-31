@@ -7,6 +7,7 @@ export default class Component {
   position: p5.Vector;
   velocity: p5.Vector;
   opacity: number = 1.0;
+  visible: boolean = true;
 
   constructor(game: Game, position?: p5.Vector, velocity?: p5.Vector) {
     this.game = game;
@@ -17,6 +18,16 @@ export default class Component {
 
   update() {
     this.position.add(this.velocity);
+    this.visible =
+      this.position.x > -1 &&
+      this.position.x < 1 &&
+      this.position.y > -1 &&
+      this.position.y < 1 &&
+      this.position.z > this.game.settings.min_z &&
+      this.position.z < this.game.settings.max_z;
+
+    if (!this.visible) return;
+
     this.opacity = this.p5.map(
       this.position.z,
       this.game.settings.min_z,
@@ -24,18 +35,6 @@ export default class Component {
       1.0,
       0.0,
       true
-    );
-  }
-
-  notVisible(): boolean {
-    // ignore if out of bounds (-1..1)
-    return (
-      this.position.x < -1 ||
-      this.position.x > 1 ||
-      this.position.y < -1 ||
-      this.position.y > 1 ||
-      this.position.z < this.game.settings.min_z ||
-      this.position.z > this.game.settings.max_z
     );
   }
 
