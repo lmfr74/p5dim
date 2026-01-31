@@ -48,10 +48,19 @@ export default class Game {
         this.components.forEach((component) => component.update());
       }
       // render all components, skipping those not visible
+      let live = false;
+
       this.p5.background(0);
       this.components.forEach((component) => {
         if (component.visible) component.render();
+        live = live || component.visible;
       });
+
+      if (!live) {
+        this.p5.background(0, 0, 255);
+        this.isPaused = true;
+        console.info('All components are out of view. Game paused.');
+      }
     };
 
     p5.keyPressed = () => {
@@ -60,8 +69,12 @@ export default class Game {
 
         console.info(`Game ${this.isPaused ? 'paused' : 'resumed'}.`);
       } else {
+        // any other key press resumes the game
+        this.isPaused = false;
+
         console.debug(`Key pressed: ${this.p5.key}`);
 
+        // notify all components of the key press
         this.components.forEach((component) => {
           component.keyPressed(this.p5.key);
         });
