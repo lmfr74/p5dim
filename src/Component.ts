@@ -48,10 +48,7 @@ export default class Component {
 
   keyPressed(key: string) {
     // increase/decrease z velocity on cursor key press
-    if (key === 'ArrowUp') {
-      Component.vz = Component.DEFAULT_Z_VELOCITY;
-    } else if (key === 'ArrowDown') {
-      Component.vz = -Component.DEFAULT_Z_VELOCITY;
-    }
+    if (key === 'ArrowUp') Component.vz = Component.DEFAULT_Z_VELOCITY;
+    else if (key === 'ArrowDown') Component.vz = -Component.DEFAULT_Z_VELOCITY;
   }
 }

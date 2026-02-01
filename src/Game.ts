@@ -1,6 +1,5 @@
 import p5 from 'p5';
 import Component from './Component';
-import StarComponent from './StarComponent';
 import Factory from './Factory';
 
 // Interface for game settings.
@@ -47,6 +46,7 @@ export default class Game {
       if (!this.isPaused) {
         this.components.forEach((component) => component.update());
       }
+
       // render all components, skipping those not visible
       let live = false;
 
@@ -75,9 +75,9 @@ export default class Game {
         console.debug(`Key pressed: ${this.p5.key}`);
 
         // notify all components of the key press
-        this.components.forEach((component) => {
-          component.keyPressed(this.p5.key);
-        });
+        this.components.forEach((component) =>
+          component.keyPressed(this.p5.key)
+        );
       }
     };
 
