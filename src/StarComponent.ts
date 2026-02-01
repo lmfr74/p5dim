@@ -1,8 +1,12 @@
 import Component from './Component';
+import p5 from 'p5';
 
 export default class StarComponent extends Component {
+  private color: number = 255;
+
   update() {
     super.update();
+    this.color = this.p5.random(150, 255);
   }
 
   render() {
@@ -13,7 +17,7 @@ export default class StarComponent extends Component {
     const size = 10 * this.opacity;
 
     // Draw a simple star at the component's position
-    this.p5.fill(255, this.opacity * 255);
+    this.p5.fill(this.color, this.opacity * 255);
     this.p5.ellipse(screenPos.x, screenPos.y, size, size);
   }
 }
