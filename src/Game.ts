@@ -11,7 +11,7 @@ interface ISettings {
   debug: boolean;
   min_z: number;
   max_z: number;
-  starsCount?: number;
+  stars?: number;
 }
 
 // Manages the game state.
@@ -19,6 +19,7 @@ export default class Game {
   p5: p5;
   settings!: ISettings;
   isPaused: boolean = false;
+  angle: number = 0;
   components: Component[] = [];
 
   constructor(p5: p5) {
@@ -35,7 +36,7 @@ export default class Game {
 
         // Initialize components using the Factory
         const factory = new Factory(this);
-        factory.addStars(this.settings.starsCount || 10);
+        factory.addStars(this.settings.stars || 10);
 
         console.info(`Game "${this.settings.name}" initialized.`);
       });
@@ -64,21 +65,16 @@ export default class Game {
     };
 
     p5.keyPressed = () => {
+      console.debug(`Key pressed: ${this.p5.key}`);
+
       if (this.p5.key === this.settings.pauseKey) {
         this.isPaused = !this.isPaused;
-
         console.info(`Game ${this.isPaused ? 'paused' : 'resumed'}.`);
-      } else {
-        // any other key press resumes the game
-        this.isPaused = false;
-
-        console.debug(`Key pressed: ${this.p5.key}`);
-
-        // notify all components of the key press
-        this.components.forEach((component) =>
-          component.keyPressed(this.p5.key)
-        );
+        return;
       }
+
+      // notify all components of the key press
+      this.components.forEach((component) => component.keyPressed(this.p5.key));
     };
 
     p5.windowResized = () => {
