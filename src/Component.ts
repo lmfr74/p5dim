@@ -9,7 +9,12 @@ export default class Component {
   opacity: number = 1.0;
   visible: boolean = false;
 
-  private static DEFAULT_Z_VELOCITY: number = 0.005;
+  private static DEFAULT_Z_VELOCITY: number = 0.01;
+
+  private static directionMap: { [key: string]: number } = {
+    ArrowUp: Component.DEFAULT_Z_VELOCITY,
+    ArrowDown: -Component.DEFAULT_Z_VELOCITY,
+  };
 
   // shared z velocity for all components. new instances use these values.
   private static z_velocity: number = this.DEFAULT_Z_VELOCITY;
@@ -26,17 +31,6 @@ export default class Component {
     // update position based on velocity
     this.velocity.z = Component.z_velocity;
     this.position.add(this.velocity);
-
-    // wrap around z position
-    if (this.velocity.z > 0) {
-      if (this.position.z > this.game.settings.max_z) {
-        this.position.z = this.game.settings.min_z;
-      }
-    } else if (this.velocity.z < 0) {
-      if (this.position.z < this.game.settings.min_z) {
-        this.position.z = this.game.settings.max_z;
-      }
-    }
 
     // determine visibility based on position and game settings
     this.visible =
@@ -66,10 +60,22 @@ export default class Component {
 
   keyPressed(key: string) {
     // increase/decrease z velocity and theta velocity on cursor key press
-    if (key === 'ArrowUp') {
-      Component.z_velocity = Component.DEFAULT_Z_VELOCITY;
-    } else if (key === 'ArrowDown') {
-      Component.z_velocity = -Component.DEFAULT_Z_VELOCITY;
+    if (key in Component.directionMap) {
+      Component.z_velocity = Component.directionMap[key];
     }
+  }
+
+  keyReleased(key: string) {
+    if (key in Component.directionMap) {
+      Component.z_velocity = 0;
+    }
+  }
+
+  private rotateAroundY(v: p5.Vector, angle: number): p5.Vector {
+    const c = this.p5.cos(angle);
+    const s = this.p5.sin(angle);
+    const rx = v.x * c - v.z * s;
+    const rz = v.x * s + v.z * c;
+    return this.p5.createVector(rx, v.y, rz);
   }
 }

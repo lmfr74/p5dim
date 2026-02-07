@@ -58,9 +58,15 @@ export default class Game {
       });
 
       if (!live) {
-        this.p5.background(0, 0, 255);
-        this.isPaused = true;
-        console.info('All components are out of view. Game paused.');
+        this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
+        this.p5.fill(255);
+        this.p5.textSize(24);
+        this.p5.text(
+          'All components are out of view.',
+          this.p5.width / 2,
+          this.p5.height / 2
+        );
+        console.info('All components are out of view.');
       }
     };
 
@@ -75,6 +81,15 @@ export default class Game {
 
       // notify all components of the key press
       this.components.forEach((component) => component.keyPressed(this.p5.key));
+    };
+
+    p5.keyReleased = () => {
+      console.debug(`Key released: ${this.p5.key}`);
+
+      // notify all components of the key release
+      this.components.forEach((component) =>
+        component.keyReleased(this.p5.key)
+      );
     };
 
     p5.windowResized = () => {
