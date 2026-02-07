@@ -26,7 +26,7 @@ export default class Game {
     this.p5 = p5;
 
     p5.setup = async () => {
-      await this.p5.loadJSON('/game.json', (data: ISettings) => {
+      await this.p5.loadJSON('game.json', (data: ISettings) => {
         this.settings = data;
         this.p5.frameRate(this.settings.fps);
 
