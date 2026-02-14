@@ -21,6 +21,21 @@ export default class Game {
   isPaused: boolean = false;
   angle: number = 0;
   components: Component[] = [];
+  z_velocity: number = 0;
+  angle_velocity: number = 0;
+
+  private DEFAULT_Z_VELOCITY: number = 0.01;
+  private DEFAULT_Y_ANGLE: number = 0.01;
+
+  directionMap: { [key: string]: number } = {
+    ArrowUp: this.DEFAULT_Z_VELOCITY,
+    ArrowDown: -this.DEFAULT_Z_VELOCITY,
+  };
+
+  rotateMap: { [key: string]: number } = {
+    ArrowRight: this.DEFAULT_Y_ANGLE,
+    ArrowLeft: -this.DEFAULT_Y_ANGLE,
+  };
 
   constructor(p5: p5) {
     this.p5 = p5;
@@ -43,12 +58,13 @@ export default class Game {
     };
 
     p5.draw = () => {
-      // if paused, skip update
+      // If paused, skip update
       if (!this.isPaused) {
+        this.angle += this.angle_velocity;
         this.components.forEach((component) => component.update());
       }
 
-      // render all components, skipping those not visible
+      // Render all components, skipping those not visible
       let live = false;
 
       this.p5.background(0);
@@ -79,14 +95,32 @@ export default class Game {
         return;
       }
 
-      // notify all components of the key press
-      this.components.forEach((component) => component.keyPressed(this.p5.key));
+      // Apply velocity on cursor key press
+      const key = this.p5.key;
+      if (key in this.directionMap) {
+        this.z_velocity = this.directionMap[key];
+      }
+      if (key in this.rotateMap) {
+        this.angle_velocity = this.rotateMap[key];
+      }
+
+      // Notify all components of the key press
+      this.components.forEach((component) => component.keyPressed(key));
     };
 
     p5.keyReleased = () => {
       console.debug(`Key released: ${this.p5.key}`);
 
-      // notify all components of the key release
+      // Remove velocity on key released
+      const key = this.p5.key;
+      if (key in this.directionMap) {
+        this.z_velocity *= 0.1; // Smoothly slow down instead of stopping abruptly
+      }
+      if (key in this.rotateMap) {
+        this.angle_velocity = 0;
+      }
+
+      // Notify all components of the key release
       this.components.forEach((component) =>
         component.keyReleased(this.p5.key)
       );
@@ -103,11 +137,20 @@ export default class Game {
 
   // Converts world coordinates (-1..1) to screen coordinates (0..width/height).
   public toScreen(p: p5.Vector): p5.Vector {
-    const projected = this.project(p);
+    const rotated = this.rotateAroundY(p);
+    const projected = this.project(rotated);
     return this.p5.createVector(
       (projected.x + 1) * 0.5 * this.p5.width,
       (1 - (projected.y + 1) * 0.5) * this.p5.height
     );
+  }
+
+  private rotateAroundY(v: p5.Vector): p5.Vector {
+    const c = this.p5.cos(this.angle);
+    const s = this.p5.sin(this.angle);
+    const rx = v.x * c - v.z * s;
+    const rz = v.x * s + v.z * c;
+    return this.p5.createVector(rx, v.y, rz);
   }
 
   private project(p: p5.Vector): p5.Vector {

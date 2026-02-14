@@ -9,7 +9,7 @@ export default class Factory {
   }
 
   public addStars(count: number): void {
-    // create a grid of stars
+    // Create a grid of stars
     const dx = 2 / count;
     const dy = 2 / count;
 
