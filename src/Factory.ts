@@ -15,7 +15,7 @@ export default class Factory {
 
     for (let x = -1; x <= 1; x += dx) {
       for (let y = -1; y <= 1; y += dy) {
-        const min_z = -this.game.settings.max_z;
+        const min_z = -this.game.settings.maxZ;
         const max_z = 1;
         const z = this.game.p5.random(min_z, max_z);
         const p = this.game.p5.createVector(x, y, z);

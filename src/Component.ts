@@ -18,7 +18,7 @@ export default class Component {
 
   update() {
     // Update position based on velocity
-    this.velocity.z = this.game.z_velocity;
+    this.velocity.z = this.game.zVelocity;
     this.position.add(this.velocity);
 
     // Determine visibility based on position and game settings
@@ -27,16 +27,16 @@ export default class Component {
       this.position.x < 1 &&
       this.position.y > -1 &&
       this.position.y < 1 &&
-      this.position.z > this.game.settings.min_z &&
-      this.position.z < this.game.settings.max_z;
+      this.position.z > this.game.settings.minZ &&
+      this.position.z < this.game.settings.maxZ;
 
     if (!this.visible) return;
 
     // Calculate opacity based on z position
     this.opacity = this.p5.map(
       this.position.z,
-      this.game.settings.min_z,
-      this.game.settings.max_z,
+      this.game.settings.minZ,
+      this.game.settings.maxZ,
       1.0,
       0.0,
       true

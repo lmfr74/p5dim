@@ -9,9 +9,10 @@ interface ISettings {
   pauseKey: string;
   fps: number;
   debug: boolean;
-  min_z: number;
-  max_z: number;
+  minZ: number;
+  maxZ: number;
   stars?: number;
+  fieldOfView?: number;
 }
 
 // Manages the game state.
@@ -21,8 +22,8 @@ export default class Game {
   isPaused: boolean = false;
   angle: number = 0;
   components: Component[] = [];
-  z_velocity: number = 0;
-  angle_velocity: number = 0;
+  zVelocity: number = 0;
+  angleVelocity: number = 0;
 
   private DEFAULT_Z_VELOCITY: number = 0.01;
   private DEFAULT_Y_ANGLE: number = 0.01;
@@ -60,7 +61,7 @@ export default class Game {
     p5.draw = () => {
       // If paused, skip update
       if (!this.isPaused) {
-        this.angle += this.angle_velocity;
+        this.angle += this.angleVelocity;
         this.components.forEach((component) => component.update());
       }
 
@@ -98,10 +99,10 @@ export default class Game {
       // Apply velocity on cursor key press
       const key = this.p5.key;
       if (key in this.directionMap) {
-        this.z_velocity = this.directionMap[key];
+        this.zVelocity = this.directionMap[key];
       }
       if (key in this.rotateMap) {
-        this.angle_velocity = this.rotateMap[key];
+        this.angleVelocity = this.rotateMap[key];
       }
 
       // Notify all components of the key press
@@ -114,10 +115,10 @@ export default class Game {
       // Remove velocity on key released
       const key = this.p5.key;
       if (key in this.directionMap) {
-        this.z_velocity *= 0.1; // Smoothly slow down instead of stopping abruptly
+        this.zVelocity *= 0.1; // Smoothly slow down instead of stopping abruptly
       }
       if (key in this.rotateMap) {
-        this.angle_velocity = 0;
+        this.angleVelocity = 0;
       }
 
       // Notify all components of the key release
