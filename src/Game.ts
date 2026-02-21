@@ -13,6 +13,8 @@ interface ISettings {
   maxZ: number;
   stars?: number;
   fieldOfView?: number;
+  zFar?: number;
+  zNear?: number;
 }
 
 // Manages the game state.
@@ -24,6 +26,10 @@ export default class Game {
   components: Component[] = [];
   zVelocity: number = 0;
   angleVelocity: number = 0;
+
+  xFactor: number = 1.0;
+  fFactor: number = 1.0;
+  zFactor: number = 1.0;
 
   private DEFAULT_Z_VELOCITY: number = 0.01;
   private DEFAULT_Y_ANGLE: number = 0.01;
@@ -134,6 +140,19 @@ export default class Game {
 
   private onWindowResize(): void {
     this.p5.resizeCanvas(this.p5.windowWidth, this.p5.windowHeight);
+
+    const a = this.p5.width / this.p5.height;
+    this.xFactor = a;
+
+    const fov = this.settings.fieldOfView || 90;
+    const f = 1 / Math.tan((fov * (Math.PI / 180)) / 2);
+    this.fFactor = f;
+
+    const zFar = this.settings.zFar ?? 1000;
+    const zNear = this.settings.zNear ?? 0.1;
+    const zDistance = zFar - zNear;
+    const zScale = zFar / zDistance;
+    this.zFactor = zScale - (zFar * zNear) / zDistance;
   }
 
   // Converts world coordinates (-1..1) to screen coordinates (0..width/height).
@@ -155,6 +174,13 @@ export default class Game {
   }
 
   private project(p: p5.Vector): p5.Vector {
-    return this.p5.createVector(p.x / p.z, p.y / p.z);
+    const x = p.x * this.xFactor * this.fFactor;
+    const y = p.y * this.fFactor;
+    const z = p.z * this.zFactor;
+    if (p.z !== 0) {
+      return this.p5.createVector(x / p.z, y / p.z, z / p.z);
+    } else {
+      return this.p5.createVector(x, y, z);
+    }
   }
 }
