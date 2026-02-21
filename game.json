@@ -2,6 +2,7 @@
   "name": "p5 dimensions",
   "description": "A simple game built with p5.js to explore 3d projections",
   "pauseKey": "p",
+  "centerKey": "c",
   "debug": true,
   "fps": 60,
   "minZ": 0.1,

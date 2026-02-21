@@ -7,6 +7,7 @@ interface ISettings {
   name: string;
   description: string;
   pauseKey: string;
+  centerKey: string;
   fps: number;
   debug: boolean;
   minZ: number;
@@ -106,6 +107,11 @@ export default class Game {
       if (this.p5.key === this.settings.pauseKey) {
         this.isPaused = !this.isPaused;
         console.info(`Game ${this.isPaused ? 'paused' : 'resumed'}.`);
+        return;
+      }
+      if (this.p5.key === this.settings.centerKey) {
+        this.angle = 0;
+        console.info('View centered.');
         return;
       }
 
