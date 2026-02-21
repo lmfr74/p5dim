@@ -19,20 +19,24 @@ interface ISettings {
 
 // Manages the game state.
 export default class Game {
+  private DEFAULT_Z_VELOCITY: number = 0.01;
+  private DEFAULT_Y_ANGLE: number = 0.01;
+  private DEFAULT_Z_FAR: number = 1000;
+  private DEFAULT_Z_NEAR: number = 0.1;
+  private DEFAULT_FOV: number = 90;
+  private EASING_FACTOR: number = 0.1;
+
   p5: p5;
   settings!: ISettings;
   isPaused: boolean = false;
   angle: number = 0;
   components: Component[] = [];
-  zVelocity: number = 0;
+  zVelocity: number = this.DEFAULT_Z_VELOCITY * this.EASING_FACTOR;
   angleVelocity: number = 0;
 
   xFactor: number = 1.0;
   fFactor: number = 1.0;
   zFactor: number = 1.0;
-
-  private DEFAULT_Z_VELOCITY: number = 0.01;
-  private DEFAULT_Y_ANGLE: number = 0.01;
 
   directionMap: { [key: string]: number } = {
     ArrowUp: this.DEFAULT_Z_VELOCITY,
@@ -86,8 +90,8 @@ export default class Game {
         this.p5.textSize(24);
         this.p5.text(
           'All components are out of view.',
-          this.p5.width / 2,
-          this.p5.height / 2
+          this.p5.width >> 1,
+          this.p5.height >> 1
         );
         console.info('All components are out of view.');
       }
@@ -118,12 +122,13 @@ export default class Game {
     p5.keyReleased = () => {
       console.debug(`Key released: ${this.p5.key}`);
 
-      // Remove velocity on key released
       const key = this.p5.key;
       if (key in this.directionMap) {
-        this.zVelocity *= 0.1; // Smoothly slow down instead of stopping abruptly
+        // Smoothly slow down instead of stopping abruptly
+        this.zVelocity *= this.EASING_FACTOR;
       }
       if (key in this.rotateMap) {
+        // Stop rotation immediately for better control
         this.angleVelocity = 0;
       }
 
@@ -140,16 +145,16 @@ export default class Game {
 
   private onWindowResize(): void {
     this.p5.resizeCanvas(this.p5.windowWidth, this.p5.windowHeight);
-
+    // Calculate aspect ratio
     const a = this.p5.width / this.p5.height;
     this.xFactor = a;
-
-    const fov = this.settings.fieldOfView || 90;
+    // Calculate field of view factor
+    const fov = this.settings.fieldOfView ?? this.DEFAULT_FOV;
     const f = 1 / Math.tan((fov * (Math.PI / 180)) / 2);
     this.fFactor = f;
-
-    const zFar = this.settings.zFar ?? 1000;
-    const zNear = this.settings.zNear ?? 0.1;
+    // Calculate z factor for depth scaling
+    const zFar = this.settings.zFar ?? this.DEFAULT_Z_FAR;
+    const zNear = this.settings.zNear ?? this.DEFAULT_Z_NEAR;
     const zDistance = zFar - zNear;
     const zScale = zFar / zDistance;
     this.zFactor = zScale - (zFar * zNear) / zDistance;
@@ -159,10 +164,9 @@ export default class Game {
   public toScreen(p: p5.Vector): p5.Vector {
     const rotated = this.rotateAroundY(p);
     const projected = this.project(rotated);
-    return this.p5.createVector(
-      (projected.x + 1) * 0.5 * this.p5.width,
-      (1 - (projected.y + 1) * 0.5) * this.p5.height
-    );
+    const x = ((projected.x + 1) * this.p5.width) >> 1;
+    const y = (1 - (projected.y + 1) / 2) * this.p5.height;
+    return this.p5.createVector(x, y);
   }
 
   private rotateAroundY(v: p5.Vector): p5.Vector {
