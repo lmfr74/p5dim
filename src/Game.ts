@@ -93,7 +93,10 @@ export default class Game {
           this.p5.width >> 1,
           this.p5.height >> 1
         );
-        console.info('All components are out of view.');
+        console.info('All components are out of view. Reversing direction.');
+
+        // Reverse direction to bring them back into view
+        this.zVelocity = -this.zVelocity;
       }
     };
 
@@ -164,7 +167,7 @@ export default class Game {
   public toScreen(p: p5.Vector): p5.Vector {
     const rotated = this.rotateAroundY(p);
     const projected = this.project(rotated);
-    const x = ((projected.x + 1) * this.p5.width) >> 1;
+    const x = ((projected.x + 1) * this.p5.width) / 2;
     const y = (1 - (projected.y + 1) / 2) * this.p5.height;
     return this.p5.createVector(x, y);
   }
