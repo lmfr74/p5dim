@@ -102,25 +102,24 @@ export default class Game {
     };
 
     p5.keyPressed = () => {
-      console.debug(`Key pressed: ${this.p5.key}`);
+      const key = this.p5.key;
+      console.debug(`Key pressed: ${key}`);
 
-      if (this.p5.key === this.settings.pauseKey) {
+      if (key === this.settings.pauseKey) {
         this.isPaused = !this.isPaused;
         console.info(`Game ${this.isPaused ? 'paused' : 'resumed'}.`);
         return;
       }
-      if (this.p5.key === this.settings.centerKey) {
+      if (key === this.settings.centerKey) {
         this.angle = 0;
         console.info('View centered.');
         return;
       }
 
       // Apply velocity on cursor key press
-      const key = this.p5.key;
       if (key in this.directionMap) {
         this.zVelocity = this.directionMap[key];
-      }
-      if (key in this.rotateMap) {
+      } else if (key in this.rotateMap) {
         this.angleVelocity = this.rotateMap[key];
       }
 
@@ -129,22 +128,19 @@ export default class Game {
     };
 
     p5.keyReleased = () => {
-      console.debug(`Key released: ${this.p5.key}`);
-
       const key = this.p5.key;
+      console.debug(`Key released: ${key}`);
+
       if (key in this.directionMap) {
         // Smoothly slow down instead of stopping abruptly
         this.zVelocity *= this.EASING_FACTOR;
-      }
-      if (key in this.rotateMap) {
+      } else if (key in this.rotateMap) {
         // Stop rotation immediately for better control
         this.angleVelocity = 0;
       }
 
       // Notify all components of the key release
-      this.components.forEach((component) =>
-        component.keyReleased(this.p5.key)
-      );
+      this.components.forEach((component) => component.keyReleased(key));
     };
 
     p5.windowResized = () => {
