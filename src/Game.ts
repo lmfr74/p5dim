@@ -1,6 +1,12 @@
 import p5 from 'p5';
 import Component from './Component';
 import Factory from './Factory';
+import MeshComponent from './MeshComponent';
+
+interface IMeshSettings {
+  vertices: number[][];
+  triangles: number[][];
+}
 
 // Interface for game settings.
 interface ISettings {
@@ -16,6 +22,7 @@ interface ISettings {
   fieldOfView?: number;
   zFar?: number;
   zNear?: number;
+  mesh?: IMeshSettings;
 }
 
 // Manages the game state.
@@ -61,9 +68,11 @@ export default class Game {
 
         this.onWindowResize();
 
-        // Initialize components using the Factory
+        // Initialize components
         const factory = new Factory(this);
         factory.addStars(this.settings.stars || 10);
+        const mesh = new MeshComponent(this);
+        this.components.push(mesh);
 
         console.info(`Game "${this.settings.name}" initialized.`);
       });
@@ -167,16 +176,16 @@ export default class Game {
 
   // Converts world coordinates (-1..1) to screen coordinates (0..width/height).
   public toScreen(p: p5.Vector): p5.Vector {
-    const rotated = this.rotateAroundY(p);
+    const rotated = this.rotateAroundY(p, this.angle);
     const projected = this.project(rotated);
     const x = ((projected.x + 1) * this.p5.width) / 2;
     const y = (1 - (projected.y + 1) / 2) * this.p5.height;
     return this.p5.createVector(x, y);
   }
 
-  private rotateAroundY(v: p5.Vector): p5.Vector {
-    const c = this.p5.cos(this.angle);
-    const s = this.p5.sin(this.angle);
+  public rotateAroundY(v: p5.Vector, angle: number): p5.Vector {
+    const c = this.p5.cos(angle);
+    const s = this.p5.sin(angle);
     const rx = v.x * c - v.z * s;
     const rz = v.x * s + v.z * c;
     return this.p5.createVector(rx, v.y, rz);
