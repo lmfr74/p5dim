@@ -5,6 +5,16 @@ export default class StarComponent extends Component {
 
   update() {
     super.update();
+    // Calculate opacity based on z position
+    this.opacity = this.p5.map(
+      this.position.z,
+      this.game.settings.minZ,
+      this.game.settings.maxZ,
+      1.0,
+      0.0,
+      true
+    );
+
     this.color = this.p5.random(150, 255);
   }
 

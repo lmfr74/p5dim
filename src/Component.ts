@@ -29,18 +29,6 @@ export default class Component {
       this.position.y < 1 &&
       this.position.z > this.game.settings.minZ &&
       this.position.z < this.game.settings.maxZ;
-
-    if (!this.visible) return;
-
-    // Calculate opacity based on z position
-    this.opacity = this.p5.map(
-      this.position.z,
-      this.game.settings.minZ,
-      this.game.settings.maxZ,
-      1.0,
-      0.0,
-      true
-    );
   }
 
   render() {}

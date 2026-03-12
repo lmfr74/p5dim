@@ -4,6 +4,9 @@ import Factory from './Factory';
 
 // Interface for mesh settings, defining vertices and triangles (clock-wise).
 interface IMeshSettings {
+  dx: number;
+  dy: number;
+  dz: number;
   factors: number[];
   vertices: number[][];
   triangles: number[][];
@@ -19,6 +22,7 @@ interface ISettings {
   debug: boolean;
   minZ: number;
   maxZ: number;
+  maxAngle?: number;
   stars?: number;
   fieldOfView?: number;
   zFar?: number;
@@ -80,8 +84,14 @@ export default class Game {
 
     p5.draw = () => {
       // If paused, skip update
+      const maxAngle = this.settings.maxAngle ?? Math.PI / 4;
+      const nextAngle = this.angle + this.angleVelocity;
       if (!this.isPaused) {
-        this.angle += this.angleVelocity;
+        if (nextAngle > maxAngle || nextAngle < -maxAngle) {
+          // Limit rotation to prevent disorientation
+        } else {
+          this.angle = nextAngle;
+        }
         this.components.forEach((component) => component.update());
       }
 
@@ -183,12 +193,40 @@ export default class Game {
     return this.p5.createVector(x, y);
   }
 
-  public rotateAroundY(v: p5.Vector, angle: number): p5.Vector {
+  public rotate(
+    v: p5.Vector,
+    angleX: number,
+    angleY: number,
+    angleZ: number
+  ): p5.Vector {
+    let rotated = this.rotateAroundX(v, angleX);
+    rotated = this.rotateAroundY(rotated, angleY);
+    rotated = this.rotateAroundZ(rotated, angleZ);
+    return rotated;
+  }
+
+  private rotateAroundX(v: p5.Vector, angle: number): p5.Vector {
+    const c = this.p5.cos(angle);
+    const s = this.p5.sin(angle);
+    const ry = v.y * c - v.z * s;
+    const rz = v.y * s + v.z * c;
+    return this.p5.createVector(v.x, ry, rz);
+  }
+
+  private rotateAroundY(v: p5.Vector, angle: number): p5.Vector {
     const c = this.p5.cos(angle);
     const s = this.p5.sin(angle);
     const rx = v.x * c - v.z * s;
     const rz = v.x * s + v.z * c;
     return this.p5.createVector(rx, v.y, rz);
+  }
+
+  private rotateAroundZ(v: p5.Vector, angle: number): p5.Vector {
+    const c = this.p5.cos(angle);
+    const s = this.p5.sin(angle);
+    const rx = v.x * c - v.y * s;
+    const ry = v.x * s + v.y * c;
+    return this.p5.createVector(rx, ry, v.z);
   }
 
   private project(p: p5.Vector, ignoreXFactor: boolean = false): p5.Vector {

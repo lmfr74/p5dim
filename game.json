@@ -7,7 +7,11 @@
   "fps": 60,
   "minZ": 0.1,
   "maxZ": 6.0,
+  "maxAngle": 0.6,
   "mesh": {
+    "dx": 0,
+    "dy": 0,
+    "dz": 1.25,
     "factors": [0.02, 0.05, 0.02],
     "vertices": [
       [0, 13, 0],

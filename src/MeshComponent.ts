@@ -5,7 +5,9 @@ import p5 from 'p5';
 export default class MeshComponent extends Component {
   vertices: p5.Vector[];
   triangles: number[][];
-  angle: number = 0;
+  angleX: number = 0;
+  angleY: number = 0;
+  angleZ: number = 0;
   angleVelocity: number = 0;
   points: p5.Vector[] = [];
 
@@ -24,13 +26,20 @@ export default class MeshComponent extends Component {
 
   update(): void {
     super.update();
-    // Ensure it's in front of the camera
-    const z = this.position.z + this.game.settings.minZ + 1;
+    // Frame and ensure it's in front of the camera
+    const dx = this.game.settings.mesh!.dx;
+    const dy = this.game.settings.mesh!.dy;
+    const dz = this.game.settings.minZ + this.game.settings.mesh!.dz;
     // Rotate and project vertices
-    this.angle += this.angleVelocity;
+    this.angleY += this.angleVelocity;
     this.points = this.vertices.map((v) => {
-      const rotated = this.game.rotateAroundY(v, this.angle);
-      const projected = this.game.toScreen(rotated.add(0, 0, z), true);
+      const rotated = this.game.rotate(
+        v,
+        this.angleX,
+        this.angleY,
+        this.angleZ
+      );
+      const projected = this.game.toScreen(rotated.add(dx, dy, dz), true);
       return projected;
     });
   }
@@ -42,11 +51,10 @@ export default class MeshComponent extends Component {
       const v2 = this.points[tri[1]];
       const v3 = this.points[tri[2]];
 
-      /*
       this.p5.noStroke();
-      this.p5.fill(255, 255, 255, this.opacity * 255);
+      this.p5.fill(255 * this.opacity);
       this.p5.triangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
-      */
+
       this.p5.stroke(128);
       this.p5.noFill();
       this.p5.triangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
@@ -57,6 +65,12 @@ export default class MeshComponent extends Component {
   keyPressed(key: string): void {
     if (this.rotateMap[key]) {
       this.angleVelocity = this.rotateMap[key];
+    }
+  }
+
+  keyReleased(key: string): void {
+    if (this.rotateMap[key]) {
+      this.angleVelocity = 0;
     }
   }
 }
