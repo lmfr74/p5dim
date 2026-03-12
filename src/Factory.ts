@@ -1,4 +1,5 @@
 import Game from './Game';
+import MeshComponent from './MeshComponent';
 import StarComponent from './StarComponent';
 
 export default class Factory {
@@ -8,8 +9,9 @@ export default class Factory {
     this.game = game;
   }
 
-  public addStars(count: number): void {
+  public addStars(): void {
     // Create a grid of stars
+    const count = this.game.settings.stars || 10;
     const dx = 2 / count;
     const dy = 2 / count;
 
@@ -23,5 +25,17 @@ export default class Factory {
         this.game.components.push(new StarComponent(this.game, p));
       }
     }
+  }
+
+  public addMesh(): void {
+    // Update mesh vertices to fit bounds
+    const factors = this.game.settings.mesh!.factors;
+    this.game.settings.mesh!.vertices.forEach((v) => {
+      v[0] *= factors[0];
+      v[1] *= factors[1];
+      v[2] *= factors[2];
+    });
+    const mesh = new MeshComponent(this.game);
+    this.game.components.push(mesh);
   }
 }

@@ -1,9 +1,10 @@
 import p5 from 'p5';
 import Component from './Component';
 import Factory from './Factory';
-import MeshComponent from './MeshComponent';
 
+// Interface for mesh settings, defining vertices and triangles (clock-wise).
 interface IMeshSettings {
+  factors: number[];
   vertices: number[][];
   triangles: number[][];
 }
@@ -47,8 +48,8 @@ export default class Game {
   zFactor: number = 1.0;
 
   directionMap: { [key: string]: number } = {
-    ArrowUp: this.DEFAULT_Z_VELOCITY,
-    ArrowDown: -this.DEFAULT_Z_VELOCITY,
+    ArrowUp: -this.DEFAULT_Z_VELOCITY,
+    ArrowDown: this.DEFAULT_Z_VELOCITY,
   };
 
   rotateMap: { [key: string]: number } = {
@@ -70,9 +71,8 @@ export default class Game {
 
         // Initialize components
         const factory = new Factory(this);
-        factory.addStars(this.settings.stars || 10);
-        const mesh = new MeshComponent(this);
-        this.components.push(mesh);
+        factory.addStars();
+        factory.addMesh();
 
         console.info(`Game "${this.settings.name}" initialized.`);
       });
@@ -175,9 +175,9 @@ export default class Game {
   }
 
   // Converts world coordinates (-1..1) to screen coordinates (0..width/height).
-  public toScreen(p: p5.Vector): p5.Vector {
+  public toScreen(p: p5.Vector, ignoreXFactor: boolean = false): p5.Vector {
     const rotated = this.rotateAroundY(p, this.angle);
-    const projected = this.project(rotated);
+    const projected = this.project(rotated, ignoreXFactor);
     const x = ((projected.x + 1) * this.p5.width) / 2;
     const y = (1 - (projected.y + 1) / 2) * this.p5.height;
     return this.p5.createVector(x, y);
@@ -191,8 +191,10 @@ export default class Game {
     return this.p5.createVector(rx, v.y, rz);
   }
 
-  private project(p: p5.Vector): p5.Vector {
-    const x = p.x * this.xFactor * this.fFactor;
+  private project(p: p5.Vector, ignoreXFactor: boolean = false): p5.Vector {
+    const x = ignoreXFactor
+      ? p.x * this.fFactor
+      : p.x * this.xFactor * this.fFactor;
     const y = p.y * this.fFactor;
     const z = p.z * this.zFactor;
     if (p.z !== 0) {

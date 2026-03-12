@@ -30,7 +30,7 @@ export default class MeshComponent extends Component {
     this.angle += this.angleVelocity;
     this.points = this.vertices.map((v) => {
       const rotated = this.game.rotateAroundY(v, this.angle);
-      const projected = this.game.toScreen(rotated.add(0, 0, z));
+      const projected = this.game.toScreen(rotated.add(0, 0, z), true);
       return projected;
     });
   }
