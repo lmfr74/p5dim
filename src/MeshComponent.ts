@@ -18,6 +18,11 @@ export default class MeshComponent extends Component {
 
   constructor(game: Game) {
     super(game);
+    // Frame and ensure it's in front of the camera
+    this.position.x = this.game.settings.mesh!.dx;
+    this.position.y = this.game.settings.mesh!.dy;
+    this.position.z = this.game.settings.minZ + this.game.settings.mesh!.dz;
+
     // Initialize vertices and triangles from game settings
     this.vertices = game.settings.mesh!.vertices.map(
       (v) => this.p5.createVector(...v) as p5.Vector
@@ -27,10 +32,6 @@ export default class MeshComponent extends Component {
 
   update(): void {
     super.update();
-    // Frame and ensure it's in front of the camera
-    const dx = this.game.settings.mesh!.dx;
-    const dy = this.game.settings.mesh!.dy;
-    const dz = this.game.settings.minZ + this.game.settings.mesh!.dz;
     // Rotate and project vertices
     this.angleY += this.angleVelocity;
     this.points = this.vertices.map((v) => {
@@ -40,7 +41,7 @@ export default class MeshComponent extends Component {
         this.angleY,
         this.angleZ
       );
-      const projected = this.game.toScreen(rotated.add(dx, dy, dz), true);
+      const projected = this.game.toScreen(rotated.add(this.position), true);
       return projected;
     });
   }
@@ -53,7 +54,7 @@ export default class MeshComponent extends Component {
       const v3 = this.points[tri[2]];
 
       this.p5.noStroke();
-      this.p5.fill(255 * this.opacity);
+      this.p5.fill(255);
       this.p5.triangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
 
       this.p5.stroke(128);

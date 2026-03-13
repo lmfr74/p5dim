@@ -41,11 +41,13 @@ export default class Game {
 
   p5: p5;
   settings!: ISettings;
+  components: Component[] = [];
   isPaused: boolean = false;
   angle: number = 0;
-  components: Component[] = [];
-  zVelocity: number = this.DEFAULT_Z_VELOCITY * this.EASING_FACTOR;
+  maxAngle: number = Math.PI / 4;
   angleVelocity: number = 0;
+
+  zVelocity: number = -this.DEFAULT_Z_VELOCITY * this.EASING_FACTOR;
 
   xFactor: number = 1.0;
   fFactor: number = 1.0;
@@ -53,7 +55,7 @@ export default class Game {
 
   directionMap: { [key: string]: number } = {
     ArrowUp: -this.DEFAULT_Z_VELOCITY,
-    ArrowDown: this.DEFAULT_Z_VELOCITY,
+    ArrowDown: 0,
   };
 
   rotateMap: { [key: string]: number } = {
@@ -67,6 +69,7 @@ export default class Game {
     p5.setup = async () => {
       await this.p5.loadJSON('game.json', (data: ISettings) => {
         this.settings = data;
+        this.maxAngle = this.settings.maxAngle ?? Math.PI / 4;
         this.p5.frameRate(this.settings.fps);
 
         console.debug('Game Settings:', this.settings);
@@ -83,41 +86,20 @@ export default class Game {
     };
 
     p5.draw = () => {
-      // If paused, skip update
-      const maxAngle = this.settings.maxAngle ?? Math.PI / 4;
-      const nextAngle = this.angle + this.angleVelocity;
+      // Update all components if the game is not paused
       if (!this.isPaused) {
-        if (nextAngle > maxAngle || nextAngle < -maxAngle) {
-          // Limit rotation to prevent disorientation
-        } else {
+        const nextAngle = this.angle + this.angleVelocity;
+        if (nextAngle <= this.maxAngle && nextAngle >= -this.maxAngle) {
           this.angle = nextAngle;
         }
         this.components.forEach((component) => component.update());
       }
 
       // Render all components, skipping those not visible
-      let live = false;
-
       this.p5.background(0);
       this.components.forEach((component) => {
         if (component.visible) component.render();
-        live = live || component.visible;
       });
-
-      if (!live) {
-        this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
-        this.p5.fill(255);
-        this.p5.textSize(24);
-        this.p5.text(
-          'All components are out of view.',
-          this.p5.width >> 1,
-          this.p5.height >> 1
-        );
-        console.info('All components are out of view. Reversing direction.');
-
-        // Reverse direction to bring them back into view
-        this.zVelocity = -this.zVelocity;
-      }
     };
 
     p5.keyPressed = () => {

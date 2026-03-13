@@ -6,7 +6,6 @@ export default class Component {
   p5: p5;
   position: p5.Vector;
   velocity: p5.Vector;
-  opacity: number = 1.0;
   visible: boolean = false;
 
   constructor(game: Game, position?: p5.Vector, velocity?: p5.Vector) {
@@ -18,7 +17,6 @@ export default class Component {
 
   update() {
     // Update position based on velocity
-    this.velocity.z = this.game.zVelocity;
     this.position.add(this.velocity);
 
     // Determine visibility based on position and game settings

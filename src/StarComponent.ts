@@ -2,8 +2,10 @@ import Component from './Component';
 
 export default class StarComponent extends Component {
   private color: number = 255;
+  private opacity: number = 1.0;
 
   update() {
+    this.velocity.z = this.game.zVelocity;
     super.update();
     // Calculate opacity based on z position
     this.opacity = this.p5.map(
