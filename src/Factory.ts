@@ -1,5 +1,4 @@
 import Game from './Game';
-import MeshComponent from './MeshComponent';
 import StarComponent from './StarComponent';
 import SymmetricMeshComponent from './SymmetricMeshComponent';
 
