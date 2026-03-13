@@ -7,16 +7,14 @@ export default class SymmetricMeshComponent extends MeshComponent {
     super(game);
     const mirroredIndexBySource = new Map<number, number>();
 
-    game.settings.mesh!.vertices.forEach((vertex, index) => {
-      if (vertex[0] === 0) {
-        mirroredIndexBySource.set(index, index);
+    game.settings.mesh!.vertices.forEach((v, i) => {
+      if (v[0] === 0) {
+        mirroredIndexBySource.set(i, i);
         return;
       }
 
-      mirroredIndexBySource.set(index, this.vertices.length);
-      this.vertices.push(
-        this.p5.createVector(-vertex[0], vertex[1], vertex[2]) as p5.Vector
-      );
+      mirroredIndexBySource.set(i, this.vertices.length);
+      this.vertices.push(this.p5.createVector(-v[0], v[1], v[2]) as p5.Vector);
     });
 
     const mirroredTriangles = game.settings.mesh!.triangles.map(([a, b, c]) => [
