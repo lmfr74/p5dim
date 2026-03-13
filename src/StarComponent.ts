@@ -5,7 +5,21 @@ export default class StarComponent extends Component {
   private opacity: number = 1.0;
 
   update() {
+    // Stars move towards the camera at a constant speed defined in game settings
     this.velocity.z = this.game.zVelocity;
+
+    // Update position based on velocity
+    this.position.add(this.velocity);
+
+    // Determine visibility based on position and game settings
+    this.visible =
+      this.position.x > -1 &&
+      this.position.x < 1 &&
+      this.position.y > -1 &&
+      this.position.y < 1 &&
+      this.position.z > this.game.settings.minZ &&
+      this.position.z < this.game.settings.maxZ;
+
     super.update();
     // Calculate opacity based on z position
     this.opacity = this.p5.map(

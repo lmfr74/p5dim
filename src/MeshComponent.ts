@@ -32,8 +32,6 @@ export default class MeshComponent extends Component {
 
   update(): void {
     super.update();
-    // Override visibility logic in Component.
-    this.visible = true;
     // Rotate and project vertices
     this.angleY += this.angleVelocity;
     this.points = this.vertices.map((v) => {

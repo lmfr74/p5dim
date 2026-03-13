@@ -6,7 +6,7 @@ export default class Component {
   p5: p5;
   position: p5.Vector;
   velocity: p5.Vector;
-  visible: boolean = false;
+  visible: boolean = true;
 
   constructor(game: Game, position?: p5.Vector, velocity?: p5.Vector) {
     this.game = game;
@@ -15,19 +15,7 @@ export default class Component {
     this.velocity = velocity || this.p5.createVector(0, 0, 0);
   }
 
-  update() {
-    // Update position based on velocity
-    this.position.add(this.velocity);
-
-    // Determine visibility based on position and game settings
-    this.visible =
-      this.position.x > -1 &&
-      this.position.x < 1 &&
-      this.position.y > -1 &&
-      this.position.y < 1 &&
-      this.position.z > this.game.settings.minZ &&
-      this.position.z < this.game.settings.maxZ;
-  }
+  update() {}
 
   render() {}
 
