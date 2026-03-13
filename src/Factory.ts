@@ -1,6 +1,7 @@
 import Game from './Game';
 import MeshComponent from './MeshComponent';
 import StarComponent from './StarComponent';
+import SymmetricMeshComponent from './SymmetricMeshComponent';
 
 export default class Factory {
   private game: Game;
@@ -35,7 +36,7 @@ export default class Factory {
       v[1] *= factors[1];
       v[2] *= factors[2];
     });
-    const mesh = new MeshComponent(this.game);
+    const mesh = new SymmetricMeshComponent(this.game);
     this.game.components.push(mesh);
   }
 }

@@ -18,6 +18,7 @@ export default class MeshComponent extends Component {
 
   constructor(game: Game) {
     super(game);
+    // Initialize vertices and triangles from game settings
     this.vertices = game.settings.mesh!.vertices.map(
       (v) => this.p5.createVector(...v) as p5.Vector
     );
