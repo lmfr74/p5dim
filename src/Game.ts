@@ -59,8 +59,8 @@ export default class Game {
   };
 
   rotateMap: { [key: string]: number } = {
-    ArrowRight: this.DEFAULT_Y_ANGLE,
-    ArrowLeft: -this.DEFAULT_Y_ANGLE,
+    ArrowRight: -this.DEFAULT_Y_ANGLE,
+    ArrowLeft: this.DEFAULT_Y_ANGLE,
   };
 
   constructor(p5: p5) {

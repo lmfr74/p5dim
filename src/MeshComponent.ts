@@ -5,7 +5,7 @@ import p5 from 'p5';
 export default class MeshComponent extends Component {
   vertices: p5.Vector[];
   triangles: number[][];
-  angleX: number = 0;
+  angleX: number = 1;
   angleY: number = 0;
   angleZ: number = 0;
   angleVelocity: number = 0;
@@ -32,6 +32,8 @@ export default class MeshComponent extends Component {
 
   update(): void {
     super.update();
+    // Override visibility logic in Component.
+    this.visible = true;
     // Rotate and project vertices
     this.angleY += this.angleVelocity;
     this.points = this.vertices.map((v) => {
@@ -41,7 +43,7 @@ export default class MeshComponent extends Component {
         this.angleY,
         this.angleZ
       );
-      const projected = this.game.toScreen(rotated.add(this.position), true);
+      const projected = this.game.toScreen(rotated.add(this.position), false);
       return projected;
     });
   }
