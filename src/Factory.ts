@@ -30,11 +30,11 @@ export default class Factory {
   public addMesh(): void {
     // Update mesh vertices to fit bounds
     const mesh = this.game.settings.meshes![0];
-    const factors = mesh.factors;
+    const scale = mesh.scale;
     mesh.vertices.forEach((v) => {
-      v[0] *= factors[0];
-      v[1] *= factors[1];
-      v[2] *= factors[2];
+      v[0] *= scale;
+      v[1] *= scale;
+      v[2] *= scale;
     });
     const meshComponent = new SymmetricMeshComponent(this.game, mesh);
     this.game.components.push(meshComponent);

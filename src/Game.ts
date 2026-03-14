@@ -7,7 +7,7 @@ export interface IMeshSettings {
   dx: number;
   dy: number;
   dz: number;
-  factors: number[];
+  scale: number;
   vertices: number[][];
   triangles: number[][];
 }

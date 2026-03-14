@@ -5,7 +5,7 @@ import p5 from 'p5';
 export default class MeshComponent extends Component {
   vertices: p5.Vector[];
   triangles: number[][];
-  angleX: number = 1;
+  angleX: number = 0.7;
   angleY: number = 0;
   angleZ: number = 0;
   angleVelocity: number = 0;
