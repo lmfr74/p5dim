@@ -29,13 +29,14 @@ export default class Factory {
 
   public addMesh(): void {
     // Update mesh vertices to fit bounds
-    const factors = this.game.settings.mesh!.factors;
-    this.game.settings.mesh!.vertices.forEach((v) => {
+    const mesh = this.game.settings.meshes![0];
+    const factors = mesh.factors;
+    mesh.vertices.forEach((v) => {
       v[0] *= factors[0];
       v[1] *= factors[1];
       v[2] *= factors[2];
     });
-    const mesh = new SymmetricMeshComponent(this.game);
-    this.game.components.push(mesh);
+    const meshComponent = new SymmetricMeshComponent(this.game, mesh);
+    this.game.components.push(meshComponent);
   }
 }

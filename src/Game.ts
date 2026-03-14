@@ -3,7 +3,7 @@ import Component from './Component';
 import Factory from './Factory';
 
 // Interface for mesh settings, defining vertices and triangles (clock-wise).
-interface IMeshSettings {
+export interface IMeshSettings {
   dx: number;
   dy: number;
   dz: number;
@@ -27,7 +27,7 @@ interface ISettings {
   fieldOfView?: number;
   zFar?: number;
   zNear?: number;
-  mesh?: IMeshSettings;
+  meshes?: IMeshSettings[];
 }
 
 // Manages the game state.

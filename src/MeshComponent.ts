@@ -1,5 +1,5 @@
 import Component from './Component';
-import Game from './Game';
+import Game, { IMeshSettings } from './Game';
 import p5 from 'p5';
 
 export default class MeshComponent extends Component {
@@ -16,18 +16,18 @@ export default class MeshComponent extends Component {
     ArrowLeft: -0.01,
   };
 
-  constructor(game: Game) {
+  constructor(game: Game, meshSettings: IMeshSettings) {
     super(game);
     // Frame and ensure it's in front of the camera
-    this.position.x = this.game.settings.mesh!.dx;
-    this.position.y = this.game.settings.mesh!.dy;
-    this.position.z = this.game.settings.minZ + this.game.settings.mesh!.dz;
+    this.position.x = meshSettings.dx;
+    this.position.y = meshSettings.dy;
+    this.position.z = this.game.settings.minZ + meshSettings.dz;
 
-    // Initialize vertices and triangles from game settings
-    this.vertices = game.settings.mesh!.vertices.map(
+    // Initialize vertices and triangles from mesh settings
+    this.vertices = meshSettings.vertices.map(
       (v) => this.p5.createVector(...v) as p5.Vector
     );
-    this.triangles = game.settings.mesh!.triangles;
+    this.triangles = meshSettings.triangles;
   }
 
   update(): void {
