@@ -29,14 +29,22 @@ export default class SymmetricMeshBuilder {
     ]);
 
     const newVertices = vertices.map(
-      (v) => this.game.p5.createVector(...v).mult(10) as p5.Vector
+      (v) =>
+        this.game.p5.createVector(
+          v[0] * meshSettings.scale[0],
+          v[1] * meshSettings.scale[1],
+          v[2] * meshSettings.scale[2]
+        ) as p5.Vector
     ) as p5.Vector[];
 
     const newTriangles = [...meshSettings.triangles, ...mirroredTriangles];
 
     return {
+      x: meshSettings.x,
+      y: meshSettings.y,
+      z: meshSettings.z,
       vertices: newVertices,
       triangles: newTriangles,
-    } as IGameMesh;
+    };
   }
 }

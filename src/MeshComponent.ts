@@ -1,5 +1,5 @@
 import Component from './Component';
-import Game, { IGameMesh } from './Game';
+import Game, { IGameMesh, IMeshPosition } from './Game';
 import p5 from 'p5';
 
 export default class MeshComponent extends Component {
@@ -10,11 +10,11 @@ export default class MeshComponent extends Component {
     super(game);
     this.mesh = mesh;
     // Frame and ensure it's in front of the camera
-    this.position.x = 0;
-    this.position.y = -300;
-    this.position.z = this.game.settings.minZ + 1000;
+    this.position.x = mesh.x;
+    this.position.y = mesh.y;
+    this.position.z = this.game.settings.minZ + mesh.z;
 
-    console.log(this.mesh);
+    console.log('Mesh position:', mesh.x, mesh.y, mesh.z);
   }
 
   render(): void {

@@ -26,7 +26,7 @@ export default class FighterComponent extends MeshComponent {
         this.angleY,
         this.angleZ
       );
-      const projected = this.game.toScreen(rotated.add(this.position), false);
+      const projected = this.game.toScreen(rotated.add(this.position), true);
       return projected;
     });
   }

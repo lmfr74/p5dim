@@ -2,20 +2,23 @@ import p5 from 'p5';
 import Component from './Component';
 import Factory from './Factory';
 
-// Interface for mesh settings, defining vertices and triangles (clock-wise).
-export interface IMeshSettings {
-  dx: number;
-  dy: number;
-  dz: number;
-  scale: number;
-  vertices: number[][];
+export interface IMeshPosition {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface IMeshBase<TVertex> extends IMeshPosition {
+  vertices: TVertex[];
   triangles: number[][];
 }
 
-export interface IGameMesh {
-  vertices: p5.Vector[];
-  triangles: number[][];
+// Interface for mesh settings, defining vertices and triangles (clock-wise).
+export interface IMeshSettings extends IMeshBase<number[]> {
+  scale: number[];
 }
+
+export interface IGameMesh extends IMeshBase<p5.Vector> {}
 
 // Interface for game settings.
 interface ISettings {
