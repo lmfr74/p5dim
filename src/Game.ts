@@ -12,6 +12,11 @@ export interface IMeshSettings {
   triangles: number[][];
 }
 
+export interface IGameMesh {
+  vertices: p5.Vector[];
+  triangles: number[][];
+}
+
 // Interface for game settings.
 interface ISettings {
   name: string;
@@ -79,7 +84,7 @@ export default class Game {
         // Initialize components
         const factory = new Factory(this);
         factory.addStars();
-        factory.addMesh();
+        factory.addFighter();
 
         console.info(`Game "${this.settings.name}" initialized.`);
       });

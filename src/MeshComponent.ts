@@ -1,54 +1,25 @@
 import Component from './Component';
-import Game, { IMeshSettings } from './Game';
+import Game, { IGameMesh } from './Game';
 import p5 from 'p5';
 
 export default class MeshComponent extends Component {
-  vertices: p5.Vector[];
-  triangles: number[][];
-  angleX: number = 0.7;
-  angleY: number = 0;
-  angleZ: number = 0;
-  angleVelocity: number = 0;
+  mesh: IGameMesh;
   points: p5.Vector[] = [];
 
-  rotateMap: { [key: string]: number } = {
-    ArrowRight: 0.01,
-    ArrowLeft: -0.01,
-  };
-
-  constructor(game: Game, meshSettings: IMeshSettings) {
+  constructor(game: Game, mesh: IGameMesh) {
     super(game);
+    this.mesh = mesh;
     // Frame and ensure it's in front of the camera
-    this.position.x = meshSettings.dx;
-    this.position.y = meshSettings.dy;
-    this.position.z = this.game.settings.minZ + meshSettings.dz;
+    this.position.x = 0;
+    this.position.y = -300;
+    this.position.z = this.game.settings.minZ + 1000;
 
-    // Initialize vertices and triangles from mesh settings
-    this.vertices = meshSettings.vertices.map(
-      (v) => this.p5.createVector(...v) as p5.Vector
-    );
-    this.triangles = meshSettings.triangles;
-  }
-
-  update(): void {
-    super.update();
-    // Rotate and project vertices
-    this.angleY += this.angleVelocity;
-    this.points = this.vertices.map((v) => {
-      const rotated = this.game.rotate(
-        v,
-        this.angleX,
-        this.angleY,
-        this.angleZ
-      );
-      const projected = this.game.toScreen(rotated.add(this.position), false);
-      return projected;
-    });
+    console.log(this.mesh);
   }
 
   render(): void {
     this.p5.push();
-    this.triangles.forEach((tri) => {
+    this.mesh.triangles.forEach((tri) => {
       const v1 = this.points[tri[0]];
       const v2 = this.points[tri[1]];
       const v3 = this.points[tri[2]];
@@ -62,17 +33,5 @@ export default class MeshComponent extends Component {
       this.p5.triangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
     });
     this.p5.pop();
-  }
-
-  keyPressed(key: string): void {
-    if (this.rotateMap[key]) {
-      this.angleVelocity = this.rotateMap[key];
-    }
-  }
-
-  keyReleased(key: string): void {
-    if (this.rotateMap[key]) {
-      this.angleVelocity = 0;
-    }
   }
 }

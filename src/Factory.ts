@@ -1,6 +1,7 @@
 import Game from './Game';
 import StarComponent from './StarComponent';
-import SymmetricMeshComponent from './SymmetricMeshComponent';
+import FighterComponent from './FighterComponent';
+import SymmetricMeshBuilder from './SymmetricMeshBuilder';
 
 export default class Factory {
   private game: Game;
@@ -27,16 +28,13 @@ export default class Factory {
     }
   }
 
-  public addMesh(): void {
+  public addFighter(): void {
     // Update mesh vertices to fit bounds
     const mesh = this.game.settings.meshes![0];
-    const scale = mesh.scale;
-    mesh.vertices.forEach((v) => {
-      v[0] *= scale;
-      v[1] *= scale;
-      v[2] *= scale;
-    });
-    const meshComponent = new SymmetricMeshComponent(this.game, mesh);
+
+    const symmetricMeshBuilder = new SymmetricMeshBuilder(this.game);
+    const symmetricMesh = symmetricMeshBuilder.build(mesh);
+    const meshComponent = new FighterComponent(this.game, symmetricMesh);
     this.game.components.push(meshComponent);
   }
 }
