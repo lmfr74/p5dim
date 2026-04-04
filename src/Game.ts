@@ -160,8 +160,7 @@ export default class Game {
   private onWindowResize(): void {
     this.p5.resizeCanvas(this.p5.windowWidth, this.p5.windowHeight);
     // Calculate aspect ratio
-    const a = this.p5.width / this.p5.height;
-    this.xFactor = a;
+    this.xFactor = this.p5.width / this.p5.height;
     // Calculate field of view factor
     const fov = this.settings.fieldOfView ?? this.DEFAULT_FOV;
     const f = 1 / Math.tan((fov * (Math.PI / 180)) / 2);
