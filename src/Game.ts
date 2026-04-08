@@ -40,12 +40,12 @@ interface ISettings {
 
 // Manages the game state.
 export default class Game {
-  private DEFAULT_Z_VELOCITY: number = 0.01;
-  private DEFAULT_Y_ANGLE: number = 0.01;
-  private DEFAULT_Z_FAR: number = 1000;
-  private DEFAULT_Z_NEAR: number = 0.1;
-  private DEFAULT_FOV: number = 90;
-  private EASING_FACTOR: number = 0.1;
+  private static readonly DEFAULT_Z_VELOCITY: number = 0.01;
+  private static readonly DEFAULT_Y_ANGLE: number = 0.01;
+  private static readonly DEFAULT_Z_FAR: number = 1000;
+  private static readonly DEFAULT_Z_NEAR: number = 0.1;
+  private static readonly DEFAULT_FOV: number = 90;
+  private static readonly EASING_FACTOR: number = 0.1;
 
   p5: p5;
   settings!: ISettings;
@@ -55,42 +55,40 @@ export default class Game {
   maxAngle: number = Math.PI / 4;
   angleVelocity: number = 0;
 
-  zVelocity: number = -this.DEFAULT_Z_VELOCITY * this.EASING_FACTOR;
+  zVelocity: number = -Game.DEFAULT_Z_VELOCITY * Game.EASING_FACTOR;
 
   xFactor: number = 1.0;
   fFactor: number = 1.0;
   zFactor: number = 1.0;
 
   directionMap: { [key: string]: number } = {
-    ArrowUp: -this.DEFAULT_Z_VELOCITY,
+    ArrowUp: -Game.DEFAULT_Z_VELOCITY,
     ArrowDown: 0,
   };
 
   rotateMap: { [key: string]: number } = {
-    ArrowRight: -this.DEFAULT_Y_ANGLE,
-    ArrowLeft: this.DEFAULT_Y_ANGLE,
+    ArrowRight: -Game.DEFAULT_Y_ANGLE,
+    ArrowLeft: Game.DEFAULT_Y_ANGLE,
   };
 
   constructor(p5: p5) {
     this.p5 = p5;
 
     p5.setup = async () => {
-      await this.p5.loadJSON('game.json', (data: ISettings) => {
-        this.settings = data;
-        this.maxAngle = this.settings.maxAngle ?? Math.PI / 4;
-        this.p5.frameRate(this.settings.fps);
+      this.settings = (await this.p5.loadJSON('game.json')) as ISettings;
+      this.maxAngle = this.settings.maxAngle ?? Math.PI / 4;
+      this.p5.frameRate(this.settings.fps);
 
-        console.debug('Game Settings:', this.settings);
+      console.debug('Game Settings:', this.settings);
 
-        this.onWindowResize();
+      this.onWindowResize();
 
-        // Initialize components
-        const factory = new Factory(this);
-        factory.addStars();
-        factory.addFighter();
+      // Initialize components
+      const factory = new Factory(this);
+      factory.addStars();
+      factory.addFighter();
 
-        console.info(`Game "${this.settings.name}" initialized.`);
-      });
+      console.info(`Game "${this.settings.name}" initialized.`);
     };
 
     p5.draw = () => {
@@ -142,7 +140,7 @@ export default class Game {
 
       if (key in this.directionMap) {
         // Smoothly slow down instead of stopping abruptly
-        this.zVelocity *= this.EASING_FACTOR;
+        this.zVelocity *= Game.EASING_FACTOR;
       } else if (key in this.rotateMap) {
         // Stop rotation immediately for better control
         this.angleVelocity = 0;
@@ -162,12 +160,12 @@ export default class Game {
     // Calculate aspect ratio
     this.xFactor = this.p5.width / this.p5.height;
     // Calculate field of view factor
-    const fov = this.settings.fieldOfView ?? this.DEFAULT_FOV;
+    const fov = this.settings.fieldOfView ?? Game.DEFAULT_FOV;
     const f = 1 / Math.tan((fov * (Math.PI / 180)) / 2);
     this.fFactor = f;
     // Calculate z factor for depth scaling
-    const zFar = this.settings.zFar ?? this.DEFAULT_Z_FAR;
-    const zNear = this.settings.zNear ?? this.DEFAULT_Z_NEAR;
+    const zFar = this.settings.zFar ?? Game.DEFAULT_Z_FAR;
+    const zNear = this.settings.zNear ?? Game.DEFAULT_Z_NEAR;
     const zDistance = zFar - zNear;
     const zScale = zFar / zDistance;
     this.zFactor = zScale - (zFar * zNear) / zDistance;

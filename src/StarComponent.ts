@@ -11,6 +11,11 @@ export default class StarComponent extends Component {
     // Update position based on velocity
     this.position.add(this.velocity);
 
+    // Wrap around if the star goes beyond the maximum z distance
+    if (this.position.z < this.game.settings.minZ) {
+      this.position.z = this.game.settings.maxZ;
+    }
+
     // Determine visibility based on position and game settings
     this.visible =
       this.position.x > -1 &&
@@ -42,6 +47,7 @@ export default class StarComponent extends Component {
     const size = 10 * this.opacity;
 
     // Draw a simple star at the component's position
+    this.p5.noStroke();
     this.p5.fill(this.color, this.opacity * 255);
     this.p5.ellipse(screenPos.x, screenPos.y, size, size);
   }

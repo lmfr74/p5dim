@@ -31,10 +31,6 @@ export default class FighterComponent extends MeshComponent {
     });
   }
 
-  render() {
-    super.render();
-  }
-
   keyPressed(key: string): void {
     if (this.rotateMap[key]) {
       this.angleVelocity = this.rotateMap[key];

@@ -31,7 +31,10 @@ export default class Factory {
   public addFighter(): void {
     // Update mesh vertices to fit bounds
     const mesh = this.game.settings.meshes![0];
-
+    if (!mesh) {
+      console.error('No mesh settings found in game configuration.');
+      return;
+    }
     const symmetricMeshBuilder = new SymmetricMeshBuilder(this.game);
     const symmetricMesh = symmetricMeshBuilder.build(mesh);
     const meshComponent = new FighterComponent(this.game, symmetricMesh);

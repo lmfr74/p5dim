@@ -9,7 +9,7 @@ export default class SymmetricMeshBuilder {
   }
 
   build(meshSettings: IMeshSettings): IGameMesh {
-    let vertices: number[][] = meshSettings.vertices;
+    let vertices: number[][] = [...meshSettings.vertices];
     let mirroredTriangles: number[][];
     let mirroredIndexBySource: Map<number, number> = new Map();
 
